@@ -3,11 +3,14 @@ Here I have created a simple CartAPI with user authentication and basic crud ope
 Main_URL:
 
 REGISTRATION::POST Method::Main_URL/register
+
   Input Body:
+  
   { "username":"sample_username",
   "password":"sample_password"}
   
   The correct response will be in the form of::
+  
   {"message":"Success",
    "token":"Random_JSON_Web_Token"}
    
