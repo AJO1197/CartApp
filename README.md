@@ -3,7 +3,7 @@ Here I have created a simple CartAPI with user authentication and basic crud ope
 
 Main_URL:
 
-**REGISTRATION::POST Method::Main_URL/register
+**REGISTRATION::POST Method::Main_URL/register**
 
   Input Body:
   
@@ -21,7 +21,7 @@ Main_URL:
    
    This token expires in 15 mins so login may be required again if 15 mins pass.
    
-**Login::POST Method::Main_URL/login
+**Login::POST Method::Main_URL/login**
 
   Input Body:
   
@@ -37,7 +37,7 @@ Main_URL:
    
   If password or username is wrong it will show error.
   
-**CreateCart::GET Method::Main_URL/createCart
+**CreateCart::GET Method::Main_URL/createCart**
    
   
  
