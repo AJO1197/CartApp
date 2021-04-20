@@ -9,7 +9,7 @@ Main_URL:
   
   { "username":"sample_username",
   
-  "password":"sample_password"}
+   "password":"sample_password"}
   
   The correct response will be in the form of::
   
@@ -27,7 +27,7 @@ Main_URL:
   
   {"username":"sample_username",
   
-  "password":"sample_password"}
+   "password":"sample_password"}
   
   The correct response will be in the form of::
   
@@ -38,6 +38,10 @@ Main_URL:
   If password or username is wrong it will show error.
   
 **CreateCart::GET Method::Main_URL/createCart**
+
+  The Token helps in authentication of the user
+  
+  
    
   
  
