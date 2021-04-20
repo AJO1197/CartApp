@@ -1,7 +1,7 @@
 # CartApp
 Here I have created a simple CartAPI with user authentication and basic crud operations.
 
-Main_URL:
+Main_URL: https://cart-api-arunav.herokuapp.com/
 
 itemIds=("Apple","Banana","Orange","Mango")
 
