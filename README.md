@@ -3,6 +3,8 @@ Here I have created a simple CartAPI with user authentication and basic crud ope
 
 Main_URL:
 
+itemIds=("Apple","Banana","Orange","Mango")
+
 **REGISTRATION::POST Method::Main_URL/register**
 
   Input Body:
