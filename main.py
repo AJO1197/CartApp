@@ -45,7 +45,7 @@ def userRegistration():
     data = parser.parse_args()
     jsonify(data)
     if data.username=="" or data.password=="":
-        return {"error":"Username or password cannot be blank"}
+        return {"error":"Username or password cannot be blank"},400
     try:
         user=mongo.db.users.find_one({"username":data.username})
         if user:
@@ -54,9 +54,9 @@ def userRegistration():
         data.password=sha256.hash(data.password)
         mongo.db.users.insert_one(data)
         refresh_token=create_access_token(identity=data['_id'])
-        return {"Message":"Congratulations User created successfully!","token":refresh_token}
+        return {"Message":"Congratulations User created successfully!","token":refresh_token},200
     except:
-        return {"error":"Username already exists or MongoDB cannot be reached please wait!"}
+        return {"error":"Username already exists or MongoDB cannot be reached please wait!"},400
 
 @app.route('/login', methods=['POST'])
 def userLogin():
@@ -66,14 +66,14 @@ def userLogin():
     try:
         user=mongo.db.users.find_one({"username":data.username})
         if not user:
-            return {"User not Found"}
+            return {"User not Found"},400
         if sha256.verify(data.password,user['password']):
             refresh_token=create_access_token(identity=user['_id'])
-            return {"Message":"Successful Login","token":refresh_token}
+            return {"Message":"Successful Login","token":refresh_token},200
         else:
-            return {"Wrong password"}
+            return {"Wrong password"},400
     except:
-        return {"error":"Database error try again after sometime"}
+        return {"error":"Database error try again after sometime"},400
             
             
 @app.route("/createCart", methods=["GET"])
@@ -83,12 +83,12 @@ def createCart():
     try:
         user=mongo.db.users.find_one({"_id":ObjectId(current_user)})
         if not user:
-            return {"error":"Token Not Valid!"}
+            return {"error":"Token Not Valid!"},400
         cart={"Creator":current_user,"items":{}}
         mongo.db.carts.insert_one(cart)
-        return cart
+        return cart,200
     except:
-        return {"error":"Database error try again after sometime"}
+        return {"error":"Database error try again after sometime"},400
 
 @app.route("/addToCart", methods=["POST"])
 @jwt_required()
@@ -102,18 +102,18 @@ def addToCart():
         if(Quantity<0):
             raise Exception()
     except:
-        return {"error":"Inputs not valid"}
+        return {"error":"Inputs not valid"},400
     try:  
         if data.itemId not in itemIds:
-            return {"error":"Not a valid Item"}
+            return {"error":"Not a valid Item"},400
         
         cart=mongo.db.carts.find_one({"_id":ObjectId(data.cartId)})
         
         if not cart:
-            return {"error":"Enter valid CartId"}
+            return {"error":"Enter valid CartId"},400
         
         if cart["Creator"]!=current_user:
-            return {"error":"User Not Authorised to view Cart"}
+            return {"error":"User Not Authorised to view Cart"},400
         
         items=cart["items"]
         itemId=data["itemId"]
@@ -128,9 +128,9 @@ def addToCart():
         newVal = {"$set":{"items":items}}
         mongo.db.carts.update_one(filter,newVal)
         cart["items"]=newVal["$set"]["items"]
-        return cart
+        return cart,200
     except:
-        return {"error":"Database error try again after sometime"}        
+        return {"error":"Database error try again after sometime"},400     
 
 @app.route("/removeFromCart", methods=["POST"])
 @jwt_required()
@@ -144,18 +144,18 @@ def removeFromCart():
         if(Quantity<0):
             raise Exception()
     except:
-        return {"error":"Inputs not valid"}
+        return {"error":"Inputs not valid"},400
     try:  
         if data.itemId not in itemIds:
-            return {"error":"Not a valid Item"}
+            return {"error":"Not a valid Item"},400
         
         cart=mongo.db.carts.find_one({"_id":ObjectId(data.cartId)})
         
         if not cart:
-            return {"error":"Enter valid CartId"}
+            return {"error":"Enter valid CartId"},400
         
         if cart["Creator"]!=current_user:
-            return {"error":"User Not Authorised to view Cart"}
+            return {"error":"User Not Authorised to view Cart"},400
         
         items=cart["items"]
         itemId=data["itemId"]
@@ -172,9 +172,9 @@ def removeFromCart():
         newVal = {"$set":{"items":items}}
         mongo.db.carts.update_one(filter,newVal)
         cart["items"]=newVal["$set"]["items"]
-        return cart
+        return cart,200
     except:
-        return {"error":"Database error try again after sometime"}
+        return {"error":"Database error try again after sometime"},400
 
 @app.route("/getCart", methods=["POST"])
 @jwt_required()
@@ -187,14 +187,14 @@ def getCart():
         cart=mongo.db.carts.find_one({"_id":ObjectId(data.cartId)})
         
         if not cart:
-            return {"error":"Enter valid CartId"}
+            return {"error":"Enter valid CartId"},400
         
         if cart["Creator"]!=current_user:
-            return {"error":"User Not Authorised to view Cart"}
+            return {"error":"User Not Authorised to view Cart"},400
         
-        return cart
+        return cart,200
     except:
-        return {"error":"Database error try again after sometime"}
+        return {"error":"Database error try again after sometime"},400
     
 @app.route("/getAllCarts", methods=["GET"])
 @jwt_required()
@@ -206,12 +206,12 @@ def getAllCarts():
         cart=mongo.db.carts.find({"Creator":current_user})
         
         if not cart:
-            return {"error":"Enter valid CartId"}
+            return {"error":"Enter valid CartId"},400
 
         agg=list(cart)
-        return {"Carts":agg}
+        return {"Carts":agg},200
     except:
-        return {"error":"Database error try again after sometime"}
+        return {"error":"Database error try again after sometime"},400
     
 @app.route("/deleteCart", methods=["POST"])
 @jwt_required()
@@ -224,14 +224,14 @@ def deleteCart():
         cart=mongo.db.carts.find_one({"_id":ObjectId(data.cartId)})
         
         if not cart:
-            return {"error":"Enter valid CartId"}
+            return {"error":"Enter valid CartId"},400
         
         if cart["Creator"]!=current_user:
-            return {"error":"User Not Authorised to view Cart"}
+            return {"error":"User Not Authorised to view Cart"},400
         
         mongo.db.carts.remove({"_id":ObjectId(data.cartId)})
-        return {"Message":"Successfully Deleted Cart"}
+        return {"Message":"Successfully Deleted Cart"},200
     except:
-        return {"error":"Database error try again after sometime"}
+        return {"error":"Database error try again after sometime"},400
     
 app.run(debug=True, use_reloader=False)
